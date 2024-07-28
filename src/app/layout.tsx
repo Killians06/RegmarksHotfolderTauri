@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
+import { CustomMenu } from "@/components/custom/CustomMenu";
+import { LateralBar } from "@/components/custom/LateralBar";
 
 import { cn } from "@/lib/utils";
 
@@ -20,15 +22,21 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="rounded-3xl">
             <head />
             <body
                 className={cn(
-                    "min-h-screen bg-background font-sans antialiased",
+                    "min-h-screen font-sans antialiased dark bg-transparent",
                     fontSans.variable,
                 )}
             >
-                {children}
+                <div>
+                    <LateralBar />
+                </div>
+                <div className="bg-secondary relative rounded-3xl">
+                    <CustomMenu />
+                    {children}
+                </div>
             </body>
         </html>
     );

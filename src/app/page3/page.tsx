@@ -1,9 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 
-export default function Home() {
+export default function Page() {
     return (
-        
         <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -14,10 +13,7 @@ export default function Home() {
             }}
             className="flex min-h-screen flex-col items-center justify-center"
         >
-            <h1 className="text-2xl">
-                Tauri Next Design Template
-            </h1>
-            <p className="text-sm text-primary">Build with Shadcn & TailwindCSS</p>
+            <h1 className="text-2xl">Page 3</h1>
         </motion.div>
     );
 }

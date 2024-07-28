@@ -11,8 +11,12 @@
     "version": "0.1.0"
   },
   "tauri": {
+    "macOSPrivateApi": true,
     "allowlist": {
-      "all": false
+      "all": false,
+      "window": {
+        "all": true
+      }
     },
     "bundle": {
       "active": true,
@@ -55,11 +59,15 @@
     },
     "windows": [
       {
+        "transparent": true,
         "fullscreen": false,
-        "height": 600,
+        "height": 700,
+        "minHeight": 600,
         "resizable": true,
         "title": "tauri-designed-template",
-        "width": 800
+        "width": 950,
+        "minWidth": 850,
+        "decorations": false
       }
     ]
   }
