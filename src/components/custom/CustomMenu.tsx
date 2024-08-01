@@ -44,7 +44,7 @@ export const CustomMenu = () => {
                             </Button>
                         </div>
                         <div className="col-span-10 p-4" data-tauri-drag-region>
-                            <DotPattern rows={3} dotsPerRow={500} />
+                            <DotPattern rows={1} dotsPerRow={500} />
                         </div>
                         <div className="col-span-1 flex justify-end items-center">
                             <Link href="/settings">
