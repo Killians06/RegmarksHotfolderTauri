@@ -1,9 +1,8 @@
 "use client";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export default function Page() {
     return (
-        
         <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -14,9 +13,7 @@ export default function Page() {
             }}
             className="flex min-h-screen flex-col items-center justify-center"
         >
-            <h1 className="text-2xl">
-                Page 2
-            </h1>
+            <h1 className="text-2xl">Page 2</h1>
         </motion.div>
     );
 }

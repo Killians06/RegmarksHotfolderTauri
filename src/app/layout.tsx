@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { CustomMenu } from "@/components/custom/CustomMenu";
 import { LateralBar } from "@/components/custom/LateralBar";
+import { DraggableRegion } from "@/components/custom/DraggableRegion";
 
 import { cn } from "@/lib/utils";
 
@@ -22,22 +23,28 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning className="rounded-3xl">
+        <html
+            lang="en"
+            suppressHydrationWarning
+            className="rounded-3xl overflow-hidden"
+        >
             <head />
-            <body
-                className={cn(
-                    "min-h-screen font-sans antialiased dark bg-transparent",
-                    fontSans.variable,
-                )}
-            >
-                <div>
-                    <LateralBar />
-                </div>
-                <div className="bg-secondary relative rounded-3xl">
-                    <CustomMenu />
-                    {children}
-                </div>
-            </body>
+            <DraggableRegion>
+                <body
+                    className={cn(
+                        "min-h-screen font-sans antialiased dark bg-transparent",
+                        fontSans.variable,
+                    )}
+                >
+                    <div>
+                        <LateralBar />
+                    </div>
+                    <div className="bg-secondary relative rounded-3xl">
+                        <CustomMenu />
+                        {children}
+                    </div>
+                </body>
+            </DraggableRegion>
         </html>
     );
 }

@@ -15,7 +15,15 @@
     "allowlist": {
       "all": false,
       "window": {
-        "all": true
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
       }
     },
     "bundle": {
@@ -33,7 +41,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "onivoid.fr",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
