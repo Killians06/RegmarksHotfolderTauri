@@ -25,11 +25,11 @@ jobs:
 
     - name: Install dependencies
       run: pnpm install
-      working-directory: frontend
+      working-directory: src
 
     - name: Check formatting
       run: pnpx prettier .
-      working-directory: frontend
+      working-directory: src
 
   lint:
     needs: format
@@ -48,8 +48,8 @@ jobs:
 
     - name: Install dependencies
       run: pnpm install
-      working-directory: frontend
+      working-directory: src
 
     - name: Lint
       run: pnpm run lint
-      working-directory: frontend
+      working-directory: src
