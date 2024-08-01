@@ -3,10 +3,10 @@ name: NextJS CI
 on:
   push:
     paths:
-    - 'frontend/**'
+    - 'src/**'
   pull_request:
     paths:
-    - 'frontend/**'
+    - 'src/**'
 
 jobs:
   format:
