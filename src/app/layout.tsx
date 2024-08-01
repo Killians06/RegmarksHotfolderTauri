@@ -39,7 +39,7 @@ export default function RootLayout({
                     <div>
                         <LateralBar />
                     </div>
-                    <div className="bg-secondary relative rounded-3xl">
+                    <div className="bg-background relative rounded-3xl">
                         <CustomMenu />
                         {children}
                     </div>

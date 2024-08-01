@@ -2,8 +2,11 @@
 import { WebviewWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 
-import { X, Minus } from "lucide-react";
+import { X, Minus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Style from "./CustomMenu.module.css";
+import Link from "next/link";
+import { DotPattern } from "./DotEffect";
 
 export const CustomMenu = () => {
     const [appWindow, setAppWindow] = useState<WebviewWindow>();
@@ -24,24 +27,33 @@ export const CustomMenu = () => {
         <>
             {appWindow ? (
                 <div className="static">
-                    <div
-                        className="absolute left-0 top-0 flex gap-2 w-full h-content p-5"
-                        data-tauri-drag-region
-                    >
-                        <Button
-                            variant="ghost"
-                            size="menuButton"
-                            onClick={close}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="menuButton"
-                            onClick={minimize}
-                        >
-                            <Minus className="h-4 w-4" />
-                        </Button>
+                    <div className="absolute left-0 top-0 grid grid-cols-12 w-full h-20 p-5">
+                        <div className="flex gap-2 col-span-1 items-center">
+                            <Button
+                                variant="ghost"
+                                size="menuButton"
+                                onClick={close}
+                            >
+                                <X />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="menuButton"
+                                onClick={minimize}
+                            >
+                                <Minus />
+                            </Button>
+                        </div>
+                        <div className="col-span-10 p-4" data-tauri-drag-region>
+                            <DotPattern rows={3} dotsPerRow={500} />
+                        </div>
+                        <div className="col-span-1 flex justify-end items-center">
+                            <Link href="/settings">
+                                <Button variant="ghost" size="menuButton">
+                                    <Settings />
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             ) : null}
