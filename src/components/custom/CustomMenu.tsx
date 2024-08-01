@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import { X, Minus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Style from "./CustomMenu.module.css";
 import Link from "next/link";
 import { DotPattern } from "./DotEffect";
 
