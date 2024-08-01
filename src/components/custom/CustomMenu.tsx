@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import { X, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-//CI TEST
 
 export const CustomMenu = () => {
     const [appWindow, setAppWindow] = useState<WebviewWindow>();
