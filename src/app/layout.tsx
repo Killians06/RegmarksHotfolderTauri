@@ -4,6 +4,7 @@ import "./globals.css";
 import { CustomMenu } from "@/components/custom/CustomMenu";
 import { LateralBar } from "@/components/custom/LateralBar";
 import { DraggableRegion } from "@/components/custom/DraggableRegion";
+import { ThemeProvider } from "@/components/custom/ThemeProvider";
 
 import { cn } from "@/lib/utils";
 
@@ -30,20 +31,24 @@ export default function RootLayout({
         >
             <head />
             <DraggableRegion>
-                <body
-                    className={cn(
-                        "min-h-screen font-sans antialiased dark bg-transparent",
-                        fontSans.variable,
-                    )}
-                >
-                    <div>
-                        <LateralBar />
-                    </div>
-                    <div className="bg-background relative rounded-3xl">
-                        <CustomMenu />
-                        {children}
-                    </div>
-                </body>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark">
+                    <body
+                        className={cn(
+                            "min-h-screen font-sans antialiased bg-transparent",
+                            fontSans.variable,
+                        )}
+                    >
+                            <div>
+                                <LateralBar />
+                            </div>
+                            <div className="bg-background relative rounded-3xl">
+                                <CustomMenu />
+                                {children}
+                            </div>
+                    </body>
+                </ThemeProvider>
             </DraggableRegion>
         </html>
     );

@@ -4,8 +4,17 @@ import { useEffect, useState } from "react";
 
 import { X, Minus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { DotPattern } from "./DotEffect";
+import { DarkModeSelector } from "./DarkModeSelector";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 export const CustomMenu = () => {
     const [appWindow, setAppWindow] = useState<WebviewWindow>();
@@ -47,11 +56,25 @@ export const CustomMenu = () => {
                             <DotPattern rows={1} dotsPerRow={200} />
                         </div>
                         <div className="col-span-1 flex justify-end items-center">
-                            <Link href="/settings">
-                                <Button variant="ghost" size="menuButton">
-                                    <Settings />
-                                </Button>
-                            </Link>
+                            <Dialog>
+                                <DialogTrigger>
+                                    <Button variant="ghost" size="menuButton">
+                                        <Settings />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                    <DialogTitle>Settings</DialogTitle>
+                                    <DialogDescription>
+                                        <ul>
+                                            <li className="flex items-center gap-5 text-foreground">
+                                                DarkMode : <DarkModeSelector />
+                                            </li>
+                                        </ul>
+                                    </DialogDescription>
+                                    </DialogHeader>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
                 </div>
