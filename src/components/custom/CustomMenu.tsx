@@ -6,6 +6,7 @@ import { X, Minus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DotPattern } from "./DotEffect";
 import { DarkModeSelector } from "./DarkModeSelector";
+import { DraggableRegion } from "@/components/custom/DraggableRegion";
 
 import {
     Dialog,
@@ -14,7 +15,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 export const CustomMenu = () => {
     const [appWindow, setAppWindow] = useState<WebviewWindow>();
@@ -53,27 +54,30 @@ export const CustomMenu = () => {
                             </Button>
                         </div>
                         <div className="col-span-10 p-4" data-tauri-drag-region>
-                            <DotPattern rows={1} dotsPerRow={200} />
+                            <DraggableRegion>
+                                <DotPattern rows={1} dotsPerRow={200} />
+                            </DraggableRegion>
                         </div>
                         <div className="col-span-1 flex justify-end items-center">
                             <Dialog>
                                 <DialogTrigger>
-                                    <div className="rounded-full p-1 h-6 w-6 hover:bg-accent hover:text-accent-foreground">
+                                    <div className="flex items-center justify-center rounded-full p-1 h-6 w-6 hover:bg-accent hover:text-accent-foreground">
                                         <Settings />
                                     </div>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
-                                    <DialogTitle>Settings</DialogTitle>
-                                    <DialogDescription asChild>
-                                        <div>
-                                            <ul>
-                                                <li className="flex items-center gap-5 text-foreground">
-                                                    DarkMode : <DarkModeSelector />
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </DialogDescription>
+                                        <DialogTitle>Settings</DialogTitle>
+                                        <DialogDescription asChild>
+                                            <div>
+                                                <ul>
+                                                    <li className="flex items-center gap-5 text-foreground">
+                                                        DarkMode :{" "}
+                                                        <DarkModeSelector />
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </DialogDescription>
                                     </DialogHeader>
                                 </DialogContent>
                             </Dialog>
