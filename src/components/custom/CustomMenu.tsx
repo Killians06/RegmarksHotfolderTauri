@@ -58,19 +58,21 @@ export const CustomMenu = () => {
                         <div className="col-span-1 flex justify-end items-center">
                             <Dialog>
                                 <DialogTrigger>
-                                    <Button variant="ghost" size="menuButton">
+                                    <div className="rounded-full p-1 h-6 w-6 hover:bg-accent hover:text-accent-foreground">
                                         <Settings />
-                                    </Button>
+                                    </div>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
                                     <DialogTitle>Settings</DialogTitle>
-                                    <DialogDescription>
-                                        <ul>
-                                            <li className="flex items-center gap-5 text-foreground">
-                                                DarkMode : <DarkModeSelector />
-                                            </li>
-                                        </ul>
+                                    <DialogDescription asChild>
+                                        <div>
+                                            <ul>
+                                                <li className="flex items-center gap-5 text-foreground">
+                                                    DarkMode : <DarkModeSelector />
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </DialogDescription>
                                     </DialogHeader>
                                 </DialogContent>

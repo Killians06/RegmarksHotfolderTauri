@@ -61,8 +61,8 @@
     * {
         @apply border-border;
     }
-    body {
-        @apply bg-background text-foreground;
+    main {
+        @apply bg-transparent text-foreground;
         display: grid;
         grid-template-columns: 25px 1fr;
     }
