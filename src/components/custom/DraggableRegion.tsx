@@ -31,7 +31,11 @@ export const DraggableRegion: React.FC<DraggableRegionProps> = ({
     };
 
     return (
-        <div onMouseDown={handleMouseDown} data-tauri-drag-region className="hover:cursor-grab">
+        <div
+            onMouseDown={handleMouseDown}
+            data-tauri-drag-region
+            className="hover:cursor-grab"
+        >
             {children}
         </div>
     );

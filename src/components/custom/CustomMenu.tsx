@@ -52,9 +52,7 @@ export const CustomMenu = ({ fullWidth }: { fullWidth: boolean }) => {
                                 <DialogDescription asChild>
                                     <div>
                                         <ul>
-                                            <li className="flex items-center gap-5 text-foreground">
-                                                
-                                            </li>
+                                            <li className="flex items-center gap-5 text-foreground"></li>
                                         </ul>
                                     </div>
                                 </DialogDescription>

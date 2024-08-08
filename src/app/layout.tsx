@@ -76,7 +76,7 @@ export default function RootLayout({
             <body
                 className={cn(
                     "min-h-screen font-sans antialiased",
-                    fontSans.variable
+                    fontSans.variable,
                 )}
             >
                 <ThemeProvider attribute="class" defaultTheme="dark">
@@ -104,10 +104,16 @@ export default function RootLayout({
                                     fullWidth ? "w-[280px]" : "w-[100px]"
                                 }`}
                             >
-                                <Button size={fullWidth ? "icon" : "iconSm"} 
+                                <Button
+                                    size={fullWidth ? "icon" : "iconSm"}
                                     onClick={() => setFullWidth(!fullWidth)}
-                                    className="absolute right-0 top-[50%] translate-y-[-50%] translate-x-1/2">
-                                    {fullWidth ? <Minimize2 /> : <Maximize2  className="h-4 w-4"/> }
+                                    className="absolute right-0 top-[50%] translate-y-[-50%] translate-x-1/2"
+                                >
+                                    {fullWidth ? (
+                                        <Minimize2 />
+                                    ) : (
+                                        <Maximize2 className="h-4 w-4" />
+                                    )}
                                 </Button>
                                 <div className="flex h-full max-h-screen flex-col ">
                                     <CustomMenu fullWidth={fullWidth} />
@@ -125,10 +131,14 @@ export default function RootLayout({
                                                     "justify-center"
                                                 } flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary`}
                                             >
-                                                <TooltipProvider delayDuration={50}>
+                                                <TooltipProvider
+                                                    delayDuration={50}
+                                                >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Home className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`} />
+                                                            <Home
+                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
+                                                            />
                                                         </TooltipTrigger>
                                                         <TooltipContent>
                                                             <p>Homepage</p>
@@ -144,10 +154,14 @@ export default function RootLayout({
                                                     "justify-center"
                                                 } flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary`}
                                             >
-                                                <TooltipProvider delayDuration={50}>
+                                                <TooltipProvider
+                                                    delayDuration={50}
+                                                >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <ShoppingCart className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`} />
+                                                            <ShoppingCart
+                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
+                                                            />
                                                         </TooltipTrigger>
                                                         <TooltipContent>
                                                             <p>Page 1</p>
@@ -163,10 +177,14 @@ export default function RootLayout({
                                                     "justify-center"
                                                 } flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary`}
                                             >
-                                                <TooltipProvider delayDuration={50}>
+                                                <TooltipProvider
+                                                    delayDuration={50}
+                                                >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Package className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`} />
+                                                            <Package
+                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
+                                                            />
                                                         </TooltipTrigger>
                                                         <TooltipContent>
                                                             <p>Page 2</p>
@@ -182,10 +200,14 @@ export default function RootLayout({
                                                     "justify-center"
                                                 } flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary`}
                                             >
-                                                <TooltipProvider delayDuration={50}>
+                                                <TooltipProvider
+                                                    delayDuration={50}
+                                                >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Users className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`} />
+                                                            <Users
+                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
+                                                            />
                                                         </TooltipTrigger>
                                                         <TooltipContent>
                                                             <p>Page 3</p>
@@ -195,7 +217,9 @@ export default function RootLayout({
                                                 {fullWidth && "Page 3"}
                                             </Link>
                                         </nav>
-                                        <div className={`flex ${fullWidth ? "justify-between" : "justify-center"} items-center px-4`}>
+                                        <div
+                                            className={`flex ${fullWidth ? "justify-between" : "justify-center"} items-center px-4`}
+                                        >
                                             {fullWidth && (
                                                 <p className="text-xs text-muted-foreground text-nowrap">
                                                     <span className="text-primary">
@@ -206,7 +230,9 @@ export default function RootLayout({
                                             )}
                                             <Dialog>
                                                 <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
-                                                    <Settings className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`} />
+                                                    <Settings
+                                                        className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
+                                                    />
                                                 </DialogTrigger>
                                                 <DialogContent>
                                                     <DialogHeader>
