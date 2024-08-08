@@ -35,9 +35,8 @@ export const CustomMenu = () => {
     return (
         <>
             {appWindow ? (
-                <div className="static">
-                    <div className="absolute left-0 top-0 grid grid-cols-12 w-full h-20 p-5">
-                        <div className="flex gap-2 col-span-1 items-center">
+                    <div className="px-4 pt-3 grid grid-cols-4 text-foreground">
+                        <div className="flex gap-2 items-center col-span-1">
                             <Button
                                 variant="ghost"
                                 size="menuButton"
@@ -53,37 +52,12 @@ export const CustomMenu = () => {
                                 <Minus />
                             </Button>
                         </div>
-                        <div className="col-span-10 p-4" data-tauri-drag-region>
+                        <div className="flex items-center col-span-10 px-4 col-span-3" data-tauri-drag-region>
                             <DraggableRegion>
-                                <DotPattern rows={1} dotsPerRow={200} />
+                                <DotPattern rows={3} dotsPerRow={40} />
                             </DraggableRegion>
                         </div>
-                        <div className="col-span-1 flex justify-end items-center">
-                            <Dialog>
-                                <DialogTrigger>
-                                    <div className="flex items-center justify-center rounded-full p-1 h-6 w-6 hover:bg-accent hover:text-accent-foreground">
-                                        <Settings />
-                                    </div>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Settings</DialogTitle>
-                                        <DialogDescription asChild>
-                                            <div>
-                                                <ul>
-                                                    <li className="flex items-center gap-5 text-foreground">
-                                                        DarkMode :{" "}
-                                                        <DarkModeSelector />
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
                     </div>
-                </div>
             ) : null}
         </>
     );

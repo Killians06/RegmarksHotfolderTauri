@@ -7,14 +7,14 @@ interface DotLineProps {
 
 const DotLine: React.FC<DotLineProps> = ({ count = 50 }) => {
     return (
-        <div className="flex justify-center w-3/4 overflow-hidden">
+        <div className="flex justify-center w-full overflow-hidden">
             {Array.from({ length: count }).map((_, index) => (
                 <Circle
                     key={index}
                     size={4}
                     fill="currentColor"
                     style={{
-                        opacity: 0.1,
+                        opacity: 0.3,
                     }}
                 />
             ))}
