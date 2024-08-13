@@ -36,7 +36,7 @@ export const CustomMenu = ({ fullWidth }: { fullWidth: boolean }) => {
                     <div className="flex items-center justify-center col-span-3 overflow-hidden">
                         <DraggableRegion>
                             <h1 className="font-bold uppercase text-primary text-nowrap">
-                                Sofware Name
+                                Software Name
                             </h1>
                         </DraggableRegion>
                     </div>

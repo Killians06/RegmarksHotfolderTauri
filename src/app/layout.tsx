@@ -100,7 +100,7 @@ export default function RootLayout({
 
                         <div className="max-h-screen w-full flex rounded-l-3xl overflow-hidden">
                             <div
-                                className={`border-r bg-card relative ${
+                                className={`border-r bg-card relative transition-size duration-150 ${
                                     fullWidth ? "w-[280px]" : "w-[100px]"
                                 }`}
                             >
@@ -121,7 +121,7 @@ export default function RootLayout({
                                     <div className="flex flex-col justify-between h-full pb-4">
                                         <nav
                                             className={`${
-                                                !fullWidth && "gap-5"
+                                                !fullWidth && "gap-3"
                                             } grid items-start text-sm font-medium px-4 pt-3`}
                                         >
                                             <Link
@@ -132,15 +132,13 @@ export default function RootLayout({
                                                 } flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary`}
                                             >
                                                 <TooltipProvider
-                                                    delayDuration={50}
+                                                    delayDuration={10}
                                                 >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Home
-                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
-                                                            />
+                                                            <Home className="h-4 w-4" />
                                                         </TooltipTrigger>
-                                                        <TooltipContent>
+                                                        <TooltipContent side="right">
                                                             <p>Homepage</p>
                                                         </TooltipContent>
                                                     </Tooltip>
@@ -159,11 +157,9 @@ export default function RootLayout({
                                                 >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <ShoppingCart
-                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
-                                                            />
+                                                            <ShoppingCart className="h-4 w-4" />
                                                         </TooltipTrigger>
-                                                        <TooltipContent>
+                                                        <TooltipContent side="right">
                                                             <p>Page 1</p>
                                                         </TooltipContent>
                                                     </Tooltip>
@@ -182,11 +178,9 @@ export default function RootLayout({
                                                 >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Package
-                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
-                                                            />
+                                                            <Package className="h-4 w-4" />
                                                         </TooltipTrigger>
-                                                        <TooltipContent>
+                                                        <TooltipContent side="right">
                                                             <p>Page 2</p>
                                                         </TooltipContent>
                                                     </Tooltip>
@@ -205,11 +199,9 @@ export default function RootLayout({
                                                 >
                                                     <Tooltip>
                                                         <TooltipTrigger>
-                                                            <Users
-                                                                className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
-                                                            />
+                                                            <Users className="h-4 w-4" />
                                                         </TooltipTrigger>
-                                                        <TooltipContent>
+                                                        <TooltipContent side="right">
                                                             <p>Page 3</p>
                                                         </TooltipContent>
                                                     </Tooltip>
@@ -218,7 +210,11 @@ export default function RootLayout({
                                             </Link>
                                         </nav>
                                         <div
-                                            className={`flex ${fullWidth ? "justify-between" : "justify-center"} items-center px-4`}
+                                            className={`flex ${
+                                                fullWidth
+                                                    ? "justify-between"
+                                                    : "justify-center"
+                                            } items-center px-4`}
                                         >
                                             {fullWidth && (
                                                 <p className="text-xs text-muted-foreground text-nowrap">
@@ -230,9 +226,20 @@ export default function RootLayout({
                                             )}
                                             <Dialog>
                                                 <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
-                                                    <Settings
-                                                        className={`h-${fullWidth ? 4 : 5} w-${fullWidth ? 4 : 5}`}
-                                                    />
+                                                    <TooltipProvider
+                                                        delayDuration={50}
+                                                    >
+                                                        <Tooltip>
+                                                            <TooltipTrigger
+                                                                asChild
+                                                            >
+                                                                <Settings className="h-4 w-4" />
+                                                            </TooltipTrigger>
+                                                            <TooltipContent side="right">
+                                                                <p>Settings</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </DialogTrigger>
                                                 <DialogContent>
                                                     <DialogHeader>
