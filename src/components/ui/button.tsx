@@ -17,7 +17,7 @@ const buttonVariants = cva(
                     "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                 secondary:
                     "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
+                ghost: "hover:bg-primary hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
             },
             size: {
@@ -25,6 +25,7 @@ const buttonVariants = cva(
                 sm: "h-9 rounded-md px-3",
                 lg: "h-11 rounded-md px-8",
                 icon: "h-10 w-10",
+                iconSm: "h-7 w-7",
                 menuButton: "rounded-full p-1 h-6 w-6",
             },
         },

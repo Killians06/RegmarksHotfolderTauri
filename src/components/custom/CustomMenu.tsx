@@ -1,12 +1,17 @@
 "use client";
-import { WebviewWindow } from "@tauri-apps/api/window";
-import { useEffect, useState } from "react";
 
-import { X, Minus, Settings } from "lucide-react";
+import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DotPattern } from "./DotEffect";
-import { DarkModeSelector } from "./DarkModeSelector";
 import { DraggableRegion } from "@/components/custom/DraggableRegion";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
     Dialog,
@@ -17,74 +22,45 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const CustomMenu = () => {
-    const [appWindow, setAppWindow] = useState<WebviewWindow>();
-
-    async function setupAppWindow() {
-        const appWindow = (await import("@tauri-apps/api/window")).appWindow;
-        setAppWindow(appWindow);
-    }
-
-    const minimize = async () => await appWindow?.minimize();
-    const close = async () => await appWindow?.close();
-
-    useEffect(() => {
-        setupAppWindow();
-    }, []);
-
+export const CustomMenu = ({ fullWidth }: { fullWidth: boolean }) => {
     return (
         <>
-            {appWindow ? (
-                <div className="static">
-                    <div className="absolute left-0 top-0 grid grid-cols-12 w-full h-20 p-5">
-                        <div className="flex gap-2 col-span-1 items-center">
-                            <Button
-                                variant="ghost"
-                                size="menuButton"
-                                onClick={close}
-                            >
-                                <X />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="menuButton"
-                                onClick={minimize}
-                            >
-                                <Minus />
-                            </Button>
-                        </div>
-                        <div className="col-span-10 p-4" data-tauri-drag-region>
-                            <DraggableRegion>
-                                <DotPattern rows={1} dotsPerRow={200} />
-                            </DraggableRegion>
-                        </div>
-                        <div className="col-span-1 flex justify-end items-center">
-                            <Dialog>
-                                <DialogTrigger>
-                                    <div className="flex items-center justify-center rounded-full p-1 h-6 w-6 hover:bg-accent hover:text-accent-foreground">
-                                        <Settings />
-                                    </div>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Settings</DialogTitle>
-                                        <DialogDescription asChild>
-                                            <div>
-                                                <ul>
-                                                    <li className="flex items-center gap-5 text-foreground">
-                                                        DarkMode :{" "}
-                                                        <DarkModeSelector />
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
+            <div
+                className={`${
+                    fullWidth
+                        ? "grid grid-cols-4 px-4 py-6"
+                        : "flex justify-center items-center p-5"
+                } text-foreground`}
+            >
+                {fullWidth && (
+                    <div className="flex items-center justify-center col-span-3 overflow-hidden">
+                        <DraggableRegion>
+                            <h1 className="font-bold uppercase text-primary text-nowrap">
+                                Software Name
+                            </h1>
+                        </DraggableRegion>
                     </div>
+                )}
+                <div className="col-span-1 flex items-center justify-center">
+                    <Dialog>
+                        <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
+                            <CircleUser className="h-6 w-6" />
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Account</DialogTitle>
+                                <DialogDescription asChild>
+                                    <div>
+                                        <ul>
+                                            <li className="flex items-center gap-5 text-foreground"></li>
+                                        </ul>
+                                    </div>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
                 </div>
-            ) : null}
+            </div>
         </>
     );
 };

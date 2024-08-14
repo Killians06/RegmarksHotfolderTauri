@@ -1,11 +1,12 @@
-import { Inter as FontSans } from "next/font/google";
-import "./globals.css";
-import { CustomMenu } from "@/components/custom/CustomMenu";
-import { LateralBar } from "@/components/custom/LateralBar";
-import { ThemeProvider } from "@/components/custom/ThemeProvider";
-import { Suspense } from "react";
+"use client";
 
+import "./globals.css";
+import { Suspense } from "react";
 import { cn } from "@/lib/utils";
+import { Sidebar } from "@/components/custom/Sidebar";
+import { ControlMenu } from "@/components/custom/ControlMenu";
+import { Inter as FontSans } from "next/font/google";
+import { ThemeProvider } from "@/components/custom/ThemeProvider";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -17,30 +18,27 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+
     return (
-        <html
-            lang="en"
-            suppressHydrationWarning
-            className="rounded-3xl overflow-hidden"
-        >
+        <html lang="en" suppressHydrationWarning className="static min-w-full">
             <head />
             <body
                 className={cn(
-                    "min-h-screen font-sans antialiased bg-transparent",
+                    "min-h-screen font-sans antialiased",
                     fontSans.variable,
                 )}
             >
                 <ThemeProvider attribute="class" defaultTheme="dark">
                     <Suspense fallback={<p>Loading ... </p>}>
-                        <main>
-                            <div>
-                                <LateralBar />
-                            </div>
-                            <div className="bg-background relative rounded-3xl">
-                                <CustomMenu />
+
+                        <ControlMenu />
+
+                        <div className="max-h-screen w-full flex rounded-l-3xl overflow-hidden">
+                            <Sidebar />
+                            <main className="flex flex-col rounded-r-3xl overflow-hidden w-full">
                                 {children}
-                            </div>
-                        </main>
+                            </main>
+                        </div>
                     </Suspense>
                 </ThemeProvider>
             </body>
