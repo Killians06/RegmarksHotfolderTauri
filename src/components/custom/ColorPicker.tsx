@@ -10,34 +10,35 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Paintbrush } from "lucide-react";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { hexToHSL } from "@/utils/hexToHsl";
 
+import { useThemeStore } from "@/stores/themeStore";
+
 export function PickerExample() {
-    const [background, setBackground] = useState("#3B3B98");
+    const { primaryColor } = useThemeStore();
 
     useEffect(() => {
         document.documentElement.style.setProperty(
             "--primary",
-            hexToHSL(background),
+            hexToHSL(primaryColor),
         );
-    }, [background]);
+    }, [primaryColor]);
 
     return (
-        <GradientPicker background={background} setBackground={setBackground} />
+        <GradientPicker primaryColor={primaryColor} />
     );
 }
 
 export function GradientPicker({
-    background,
-    setBackground,
+    primaryColor,
     className,
 }: {
-    background: string;
-    setBackground: (background: string) => void;
+    primaryColor: string;
     className?: string;
 }) {
-    const solids = ["#3B3B98", "#B33771", "#FC427B", "#FEA47F"];
+    
+    const { setPrimaryColor, primaryColorChoices } = useThemeStore();
 
     const defaultTab = useMemo(() => {
         return "solid";
@@ -50,21 +51,21 @@ export function GradientPicker({
                     variant={"outline"}
                     className={cn(
                         "w-[220px] justify-start text-left font-normal",
-                        !background && "text-muted-foreground",
+                        !primaryColor && "text-muted-foreground",
                         className,
                     )}
                 >
                     <div className="w-full flex items-center gap-2">
-                        {background ? (
+                        {primaryColor ? (
                             <div
                                 className="h-4 w-4 rounded !bg-center !bg-cover transition-all"
-                                style={{ background }}
+                                style={{ background : primaryColor }}
                             ></div>
                         ) : (
                             <Paintbrush className="h-4 w-4" />
                         )}
                         <div className="truncate flex-1">
-                            {background ? background : "Pick a color"}
+                            {primaryColor ? primaryColor : "Pick a color"}
                         </div>
                     </div>
                 </Button>
@@ -75,12 +76,12 @@ export function GradientPicker({
                         value="solid"
                         className="flex flex-wrap gap-1 mt-2"
                     >
-                        {solids.map((s) => (
+                        {primaryColorChoices.map((s) => (
                             <div
                                 key={s}
                                 style={{ background: `hsl(${hexToHSL(s)})` }}
                                 className="rounded-md h-6 w-6 cursor-pointer active:scale-105"
-                                onClick={() => setBackground(s)}
+                                onClick={() => setPrimaryColor(s)}
                             />
                         ))}
                     </TabsContent>
@@ -88,9 +89,9 @@ export function GradientPicker({
 
                 <Input
                     id="custom"
-                    value={background}
+                    value={primaryColor}
                     className="col-span-2 h-8 mt-4"
-                    onChange={(e) => setBackground(e.currentTarget.value)}
+                    onChange={(e) => setPrimaryColor(e.currentTarget.value)}
                 />
             </PopoverContent>
         </Popover>
@@ -98,16 +99,16 @@ export function GradientPicker({
 }
 
 const GradientButton = ({
-    background,
+    primaryColor,
     children,
 }: {
-    background: string;
+    primaryColor: string;
     children: React.ReactNode;
 }) => {
     return (
         <div
             className="p-0.5 rounded-md relative !bg-cover !bg-center transition-all"
-            style={{ background }}
+            style={{ background : primaryColor }}
         >
             <div className="bg-popover/80 rounded-md p-1 text-xs text-center">
                 {children}
