@@ -19,20 +19,12 @@ export const ControlMenu = () => {
 
     return (
         <div className="absolute right-4 top-4 flex gap-3">
-                            <Button
-                                variant="ghost"
-                                size="menuButton"
-                                onClick={minimize}
-                            >
-                                <Minus />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="menuButton"
-                                onClick={close}
-                            >
-                                <X />
-                            </Button>
-                        </div>
-    )
+            <Button variant="ghost" size="menuButton" onClick={minimize}>
+                <Minus />
+            </Button>
+            <Button variant="ghost" size="menuButton" onClick={close}>
+                <X />
+            </Button>
+        </div>
+    );
 };

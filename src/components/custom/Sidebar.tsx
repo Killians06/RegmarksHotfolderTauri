@@ -165,11 +165,15 @@ export const Sidebar = () => {
                                         <div>
                                             <ul className="text-foreground flex flex-col gap-4 mt-4">
                                                 <li className="flex items-center gap-5 text-foreground">
-                                                    <p className="min-w-[100px]">DarkMode :{" "}</p>
+                                                    <p className="min-w-[100px]">
+                                                        DarkMode :{" "}
+                                                    </p>
                                                     <DarkModeSelector />
                                                 </li>
                                                 <li className="flex items-center gap-5 text-foreground">
-                                                    <p className="min-w-[100px]">Color Picker : </p>
+                                                    <p className="min-w-[100px]">
+                                                        Color Picker :{" "}
+                                                    </p>
                                                     <PickerExample />
                                                 </li>
                                             </ul>
@@ -180,22 +184,6 @@ export const Sidebar = () => {
                         </Dialog>
                     </div>
                 </div>
-                {/* <div className="mt-auto p-4">
-                        <Card x-chunk="dashboard-02-chunk-0">
-                            <CardHeader className="p-2 pt-0 md:p-4">
-                                <CardTitle>Upgrade to Pro</CardTitle>
-                                <CardDescription>
-                                    Unlock all features and get unlimited access
-                                    to our support team.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                                <Button size="sm" className="w-full">
-                                    Upgrade
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </div> */}
             </div>
         </div>
     );

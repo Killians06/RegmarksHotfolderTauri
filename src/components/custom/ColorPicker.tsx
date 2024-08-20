@@ -17,14 +17,14 @@ export function PickerExample() {
     const [background, setBackground] = useState("#3B3B98");
 
     useEffect(() => {
-        document.documentElement.style.setProperty('--primary', hexToHSL(background));
+        document.documentElement.style.setProperty(
+            "--primary",
+            hexToHSL(background),
+        );
     }, [background]);
 
     return (
-        <GradientPicker
-                background={background}
-                setBackground={setBackground}
-            />
+        <GradientPicker background={background} setBackground={setBackground} />
     );
 }
 
@@ -37,16 +37,11 @@ export function GradientPicker({
     setBackground: (background: string) => void;
     className?: string;
 }) {
-    const solids = [
-        "#3B3B98",
-        "#B33771",
-        "#FC427B",
-        "#FEA47F",
-    ];
+    const solids = ["#3B3B98", "#B33771", "#FC427B", "#FEA47F"];
 
     const defaultTab = useMemo(() => {
         return "solid";
-    }, [background]);
+    }, []);
 
     return (
         <Popover>
@@ -56,7 +51,7 @@ export function GradientPicker({
                     className={cn(
                         "w-[220px] justify-start text-left font-normal",
                         !background && "text-muted-foreground",
-                        className
+                        className,
                     )}
                 >
                     <div className="w-full flex items-center gap-2">
