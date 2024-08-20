@@ -25,9 +25,7 @@ export function PickerExample() {
         );
     }, [primaryColor]);
 
-    return (
-        <GradientPicker primaryColor={primaryColor} />
-    );
+    return <GradientPicker primaryColor={primaryColor} />;
 }
 
 export function GradientPicker({
@@ -37,7 +35,6 @@ export function GradientPicker({
     primaryColor: string;
     className?: string;
 }) {
-    
     const { setPrimaryColor, primaryColorChoices } = useThemeStore();
 
     const defaultTab = useMemo(() => {
@@ -59,7 +56,7 @@ export function GradientPicker({
                         {primaryColor ? (
                             <div
                                 className="h-4 w-4 rounded !bg-center !bg-cover transition-all"
-                                style={{ background : primaryColor }}
+                                style={{ background: primaryColor }}
                             ></div>
                         ) : (
                             <Paintbrush className="h-4 w-4" />
@@ -108,7 +105,7 @@ const GradientButton = ({
     return (
         <div
             className="p-0.5 rounded-md relative !bg-cover !bg-center transition-all"
-            style={{ background : primaryColor }}
+            style={{ background: primaryColor }}
         >
             <div className="bg-popover/80 rounded-md p-1 text-xs text-center">
                 {children}
