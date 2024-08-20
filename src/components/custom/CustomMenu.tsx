@@ -32,23 +32,7 @@ export const CustomMenu = ({ fullWidth }: { fullWidth: boolean }) => {
                     </div>
                 )}
                 <div className="col-span-1 flex items-center justify-center">
-                    <Dialog>
-                        <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
-                            <CircleUser className="h-6 w-6" />
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Account</DialogTitle>
-                                <DialogDescription asChild>
-                                    <div>
-                                        <ul>
-                                            <li className="flex items-center gap-5 text-foreground"></li>
-                                        </ul>
-                                    </div>
-                                </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+                    <CircleUser className="h-6 w-6" />
                 </div>
             </div>
         </>
