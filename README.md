@@ -1,4 +1,4 @@
-# Tauri-Next-Designed-Template
+# TaurineCN
 
 ![Shadcn](https://img.shields.io/badge/-Shadcn-007ACC?logo=visual-studio-code&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-38B2AC?logo=tailwind-css&logoColor=white)
@@ -27,9 +27,9 @@ Clonez le dépôt et installez les dépendances :
 
 ```bash
 
-git clone https://github.com/Onivoid/Tauri-Next-Designed-Template.git
+git clone https://github.com/Onivoid/TaurineCN.git
 
-cd Tauri-Next-Designed-Template
+cd TaurineCN
 
 npm install
 # ou
