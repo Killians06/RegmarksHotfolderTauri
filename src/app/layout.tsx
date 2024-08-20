@@ -18,7 +18,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-
     return (
         <html lang="en" suppressHydrationWarning className="static min-w-full">
             <head />
@@ -30,7 +29,6 @@ export default function RootLayout({
             >
                 <ThemeProvider attribute="class" defaultTheme="dark">
                     <Suspense fallback={<p>Loading ... </p>}>
-
                         <ControlMenu />
 
                         <div className="max-h-screen w-full flex rounded-l-3xl overflow-hidden">

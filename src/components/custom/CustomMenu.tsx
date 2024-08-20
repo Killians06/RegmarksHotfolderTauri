@@ -1,17 +1,7 @@
 "use client";
 
 import { CircleUser } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DraggableRegion } from "@/components/custom/DraggableRegion";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
     Dialog,
