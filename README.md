@@ -8,6 +8,8 @@
 
 Ce projet est un template [Next.js](https://nextjs.org/) intégré avec [Tauri](https://tauri.app/), [TailwindCSS](https://tailwindcss.com/), [Shadcn](https://ui.shadcn.com), et [Zustand](https://github.com/pmndrs/zustand). Il a été initialisé avec `create-next-app` en suivant la [Documentation de Tauri](https://tauri.app/fr/v1/guides/getting-started/setup/next-js).
 
+![Présentation Gif](./Documentation/Assets/Animationsmall.gif)
+
 ## Prise en main
 
 ### Prérequis
