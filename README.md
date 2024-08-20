@@ -1,10 +1,10 @@
 # Tauri-Next-Designed-Template
 
-![Shadcn](https://img.shields.io/badge/Shadcn-UI-blue)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-blue)
-![Rust](https://img.shields.io/badge/Rust-orange)
-![TauriApp](https://img.shields.io/badge/TauriApp-blue)
-![Zustand](https://img.shields.io/badge/Zustand-blue)
+![Shadcn](https://img.shields.io/badge/-Shadcn-007ACC?logo=visual-studio-code&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-38B2AC?logo=tailwind-css&logoColor=white)
+![Rust](https://img.shields.io/badge/-Rust-000000?logo=rust&logoColor=white)
+![Tauri](https://img.shields.io/badge/-Tauri-FFC131?logo=tauri&logoColor=white)
+![Zustand](https://img.shields.io/badge/-Zustand-000000?logo=zustand&logoColor=white)
 
 Ce projet est un template [Next.js](https://nextjs.org/) intégré avec [Tauri](https://tauri.app/), [TailwindCSS](https://tailwindcss.com/), et [Zustand](https://github.com/pmndrs/zustand). Il a été initialisé avec [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
