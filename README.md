@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tauri-Next-Designed-Template
 
-## Getting Started
+![Shadcn](https://img.shields.io/badge/Shadcn-UI-blue)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v3.4.1-blue)
+![Rust](https://img.shields.io/badge/Rust-v1.60.0-orange)
+![TauriApp](https://img.shields.io/badge/TauriApp-v1.7.0-blue)
+![Zustand](https://img.shields.io/badge/Zustand-v4.5.4-blue)
 
-First, run the development server:
+Ce projet est un template [Next.js](https://nextjs.org/) intégré avec [Tauri](https://tauri.app/), [TailwindCSS](https://tailwindcss.com/), et [Zustand](https://github.com/pmndrs/zustand). Il a été initialisé avec [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Prise en main
+
+### Prérequis
+
+Assurez-vous d'avoir installé les dépendances suivantes sur votre machine :
+
+- Node.js
+- Pnpm (Si vous utilisez un autre comme Yarn, des changements devront être fait dans le [Makefile](./Makefile))
+- Rust et Cargo (pour Tauri)
+- Make pour les commandes du [Makefile](./Makefile)
+
+### Installation
+
+Clonez le dépôt et installez les dépendances :
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+git clone https://github.com/Onivoid/Tauri-Next-Designed-Template.git
+
+cd Tauri-Next-Designed-Template
+
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+# ou
+bun install
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ⚠️ **Avant de continuer** ⚠️ : Si vous n'utilisez pas pnpm, vous allez devoir changer les commandes dans le [Makefile](./Makefile) avant de continuer
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Démarrer le serveur de développement
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Pour démarrer le serveur de développement Tauri, utilisez la commande suivante définie dans le Makefile :
 
-## Learn More
+```bash
+make dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Autres commandes Makefile
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Pour formater le code :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+  ```bash
+  make format
+  ```
 
-## Deploy on Vercel
+- Pour lancer l'analyse statique du code :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  ```bash
+  make lint
+  ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Pour formater et analyser le code :
+
+  ```bash
+  make check
+  ```
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
