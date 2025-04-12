@@ -22,7 +22,7 @@ export const ControlMenu = () => {
             <Button variant="ghost" size="menuButton" onClick={minimize}>
                 <Minus />
             </Button>
-            <Button variant="ghost" size="menuButton" onClick={close}>
+            <Button variant="ghost" size="menuButton" className="hover:bg-red-700 hover:text-white" onClick={close}>
                 <X />
             </Button>
         </div>

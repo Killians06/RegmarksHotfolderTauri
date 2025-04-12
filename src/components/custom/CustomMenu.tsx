@@ -15,9 +15,9 @@ export const CustomMenu = ({ fullWidth }: { fullWidth: boolean }) => {
                     } text-foreground`}
                 >
                     {fullWidth && (
-                        <div className="flex items-center justify-center col-span-3 overflow-hidden">
+                        <div className="flex items-center justify-center col-span-3 ">
                             <h1 className="font-bold uppercase text-primary text-nowrap">
-                                Software Name
+                                Regmarks Hotfolder
                             </h1>
                         </div>
                     )}

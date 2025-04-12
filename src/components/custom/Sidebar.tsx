@@ -40,13 +40,13 @@ export const Sidebar = () => {
     return (
         <div
             className={`border-r bg-card relative transition-size duration-150 ${
-                fullWidth ? "w-[280px]" : "w-[100px]"
+                fullWidth ? "w-[400px]" : "w-[75px]"
             }`}
         >
             <Button
                 size={fullWidth ? "icon" : "iconSm"}
                 onClick={() => setFullWidth(!fullWidth)}
-                className="absolute right-0 top-[50%] translate-y-[-50%] translate-x-1/2"
+                className="absolute right-0 top-[50%] translate-y-[-50%] translate-x-1/2 z-10"
             >
                 {fullWidth ? <Minimize2 /> : <Maximize2 className="h-4 w-4" />}
             </Button>
@@ -89,11 +89,11 @@ export const Sidebar = () => {
                                         <ShoppingCart className="h-4 w-4" />
                                     </TooltipTrigger>
                                     <TooltipContent side="right">
-                                        <p>Page 1</p>
+                                        <p>Tableau de Remplacement</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                            {fullWidth && "Page 1"}
+                            {fullWidth && "Tableau de Remplacement"}
                         </Link>
                         <Link
                             href="/page2"
@@ -107,11 +107,11 @@ export const Sidebar = () => {
                                         <Package className="h-4 w-4" />
                                     </TooltipTrigger>
                                     <TooltipContent side="right">
-                                        <p>Page 2</p>
+                                        <p>Configuration des Dossiers</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                            {fullWidth && "Page 2"}
+                            {fullWidth && "Configuration des Dossiers"}
                         </Link>
                         <Link
                             href="/page3"
@@ -140,9 +140,9 @@ export const Sidebar = () => {
                         {fullWidth && (
                             <p className="text-xs text-muted-foreground text-nowrap">
                                 <span className="text-primary">
-                                    Software Name
+                                    Regmarks Hotfolder
                                 </span>{" "}
-                                - by Onivoid
+                                - by SKS
                             </p>
                         )}
                         <Dialog>

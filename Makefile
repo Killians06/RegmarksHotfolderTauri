@@ -1,10 +1,10 @@
 format:
-	pnpx prettier --write .
+	npx prettier --write .
 
 lint:
-	pnpm run lint
+	npm run lint
 
 check: format lint
 
 dev: 
-	pnpm tauri dev
+	npx tauri dev
