@@ -13,7 +13,7 @@
   "tauri": {
     "macOSPrivateApi": true,
     "allowlist": {
-      "all": false,
+      "all": true,
       "window": {
         "all": false,
         "close": true,
@@ -42,7 +42,7 @@
           "$APPDATA/**"
         ],
         "writeFile": true
-},
+      },
       "path": {
         "all": true
       }

@@ -5,20 +5,9 @@ import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { join } from "@tauri-apps/api/path";
 import { appDataDir } from "@tauri-apps/api/path";
 
-// Fonction pour normaliser les chemins
-// const normalizePath = (path: string) => path.replace(/\\/g, "/");
-
-// const checkAppDir = async (): Promise<string> => {
-//     const appDirectory = await appDataDir();
-//     const normalizedPath = normalizePath(appDirectory);
-//     console.log("Répertoire AppData résolu :", normalizedPath);
-//     return normalizedPath;
-// };
-// checkAppDir();
 
 export default function Page() {
 
-    // const [appDir, setAppDir] = useState<string>("");
     
     const [data, setData] = useState([
         { id: 1, original: "Bonjour", replacement: "Hello" },
@@ -28,34 +17,40 @@ export default function Page() {
 
     const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
 
+    const ensureDataFileExists = async () => {
+        try {
+            // Vérifier si le fichier existe
+            await readTextFile("data.json", { dir: BaseDirectory.App });
+        } catch (error) {
+            // Si le fichier n'existe pas, le créer avec un contenu par défaut
+            const defaultData = [
+                { id: 1, original: "Register", replacement: "Mark" },
+                { id: 2, original: "CutContour", replacement: "Cut" },
+            ];
+            await writeTextFile("data.json", JSON.stringify(defaultData, null, 2), {
+                dir: BaseDirectory.App,
+            });
+            console.log("Fichier data.json créé avec des données par défaut.");
+        }
+    };
+
+    const loadData = async () => {
+        try {
+            const fileData = await readTextFile("data.json", { dir: BaseDirectory.App });
+            setData(JSON.parse(fileData));
+            console.log("Données chargées :", JSON.parse(fileData));
+        } catch (error) {
+            console.error("Erreur lors du chargement des données :", error);
+        }
+    };
+
     // Charger les données depuis le fichier JSON
     useEffect(() => {
-        // const fetchAppDir = async () => {
-        //     const directory = await checkAppDir();
-        //     setAppDir(directory); // Stocker le chemin dans l'état
-        // };
-        // fetchAppDir();
-        
-        
-        const loadData = async () => {
-            try {
-                const fileData = await readTextFile("data.json", { dir: BaseDirectory.App });
-                setData(JSON.parse(fileData));
-                console.log("Données chargées :", JSON.parse(fileData));
-            } catch (error) {
-                console.error("Erreur lors du chargement des données :", error);
-                // Créer un fichier par défaut si le fichier n'existe pas
-                const defaultData = [
-                    { id: 1, original: "Register", replacement: "Mark" },
-                    { id: 2, original: "CutContour", replacement: "Cut" },
-                ];
-                await writeTextFile("data.json", JSON.stringify(defaultData, null, 2), {
-                    dir: BaseDirectory.App,
-                });
-                setData(defaultData);
-            }
+        const initializeDataFile = async () => {
+            await ensureDataFileExists(); // Vérifier et créer le fichier si nécessaire
+            loadData(); // Charger les données depuis le fichier
         };
-        loadData();
+        initializeDataFile();
     }, []);
     
 

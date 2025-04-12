@@ -1,17 +1,32 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
+import { listen } from "@tauri-apps/api/event";
+
+
 
 export default function Page() {
     const [isMonitoring, setIsMonitoring] = useState(false);
-    const [logs, setLogs] = useState<string[]>([]); // Stocker les logs
+    const [logs, setLogs] = useState<string[]>([]);
+    const [inputFolder, setInputFolder] = useState<string>("");
 
-    const toggleMonitoring = () => {
-        setIsMonitoring((prev) => !prev);
+    const toggleMonitoring = async () => {
         if (!isMonitoring) {
             setLogs((prevLogs) => [...prevLogs, "Surveillance démarrée..."]);
+            setIsMonitoring(true);
+
+            // Appeler la commande backend pour commencer la surveillance
+            await invoke("start_monitoring", { folderPath: inputFolder });
+
+            // Écouter les événements de changement de dossier
+                listen("folder-changed", (event) => {
+                    setLogs((prevLogs) => [...prevLogs, `Changement détecté : ${event.payload}`]);
+                });
         } else {
+            await invoke("stop_monitoring");
             setLogs((prevLogs) => [...prevLogs, "Surveillance arrêtée."]);
+            setIsMonitoring(false);
         }
     };
 
