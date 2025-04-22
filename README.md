@@ -41,9 +41,9 @@ Assurez-vous d'avoir installé les dépendances suivantes sur votre machine :
 Clonez le dépôt et installez les dépendances :
 
 ```bash
-git clone https://github.com/Onivoid/TaurineCN.git
+git clone https://github.com/Killians06/RegmarksHotfolderTauri.git
 
-cd TaurineCN
+cd RegmarksHotfolderTauri
 
 npm install
 # ou
