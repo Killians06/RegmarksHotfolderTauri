@@ -3,10 +3,12 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { open } from "@tauri-apps/api/dialog";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
+import { useLogStore } from "@/stores/logStore"; // Importer le store des logs
 
 export default function FolderConfigPage() {
     const [inputFolder, setInputFolder] = useState<string | null>(null);
     const [outputFolder, setOutputFolder] = useState<string | null>(null);
+    const addLog = useLogStore((state) => state.addLog); // Utiliser la méthode pour ajouter un log
 
     // Charger les dossiers depuis un fichier JSON
     useEffect(() => {
@@ -44,6 +46,7 @@ export default function FolderConfigPage() {
         if (typeof selected === "string") {
             setInputFolder(selected);
             saveFolders(selected, outputFolder); // Sauvegarder le dossier sélectionné
+            addLog(`[${new Date().toLocaleString()}] - Dossier d'entrée sélectionné : ${selected}`); // Ajouter un log
         }
     };
 
@@ -56,6 +59,7 @@ export default function FolderConfigPage() {
         if (typeof selected === "string") {
             setOutputFolder(selected);
             saveFolders(inputFolder, selected); // Sauvegarder le dossier sélectionné
+            addLog(`[${new Date().toLocaleString()}] - Dossier de sortie sélectionné : ${selected}`); // Ajouter un log
         }
     };
 

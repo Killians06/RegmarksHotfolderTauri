@@ -1,31 +1,34 @@
 "use client";
+
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
-
-
+import { useLogStore } from "@/stores/logStore";
+import LogBox from "@/components/LogBox";
 
 export default function Page() {
     const [isMonitoring, setIsMonitoring] = useState(false);
-    const [logs, setLogs] = useState<string[]>([]);
-    const [inputFolder, setInputFolder] = useState<string>("");
+    const addLog = useLogStore((state) => state.addLog);
+    const logs = useLogStore((state) => state.logs);
 
     const toggleMonitoring = async () => {
         if (!isMonitoring) {
-            setLogs((prevLogs) => [...prevLogs, "Surveillance démarrée..."]);
+            addLog(`[${new Date().toLocaleString()}] - Surveillance démarrée...`);
             setIsMonitoring(true);
 
             // Appeler la commande backend pour commencer la surveillance
-            await invoke("start_monitoring", { folderPath: inputFolder });
+            await invoke("start_monitoring", { folderPath: "path/to/folder" });
 
             // Écouter les événements de changement de dossier
-                listen("folder-changed", (event) => {
-                    setLogs((prevLogs) => [...prevLogs, `Changement détecté : ${event.payload}`]);
-                });
+            listen("folder-changed", (event) => {
+                const timestamp = new Date().toLocaleString();
+                addLog(`[${timestamp}] - Changement détecté : ${event.payload}`);
+            });
         } else {
+            const timestamp = new Date().toLocaleString();
             await invoke("stop_monitoring");
-            setLogs((prevLogs) => [...prevLogs, "Surveillance arrêtée."]);
+            addLog(`[${timestamp}] - Surveillance arrêtée.`);
             setIsMonitoring(false);
         }
     };
@@ -55,16 +58,7 @@ export default function Page() {
 
             {/* Logbox */}
             <div className="flex-grow relative">
-                <div className="absolute bottom-0 left-0 w-full h-1/2 mx-auto bg-gray-100 border-t border-gray-300 overflow-y-auto p-4 rounded-lg shadow-lg">
-                    <h2 className="text-lg font-bold mb-2">Logs</h2>
-                    <div className="space-y-2">
-                        {logs.map((log, index) => (
-                            <p key={index} className="text-sm text-gray-700">
-                                {log}
-                            </p>
-                        ))}
-                    </div>
-                </div>
+                <LogBox logs={logs} />
             </div>
         </motion.div>
     );

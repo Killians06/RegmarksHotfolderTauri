@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
+use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher, Config};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -101,12 +101,17 @@ fn start_monitoring(
     state.watcher = Some(watcher);
 
     std::thread::spawn(move || {
-        for event in rx {
-            if let Ok(event) = event {
-                app_handle.emit_all("folder-changed", format!("{:?}", event)).unwrap();
-            }
-        }
-    });
+      for event in rx {
+          if let Ok(event) = event {
+              // Filtrer uniquement les événements de création
+              if let EventKind::Create(_) = event.kind {
+                  app_handle
+                      .emit_all("folder-changed", format!("Nouveau fichier : {:?}", event.paths))
+                      .unwrap();
+              }
+          }
+      }
+  });
 
     println!("Surveillance démarrée sur le dossier : {}", folder_path);
 }
