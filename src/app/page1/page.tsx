@@ -2,9 +2,16 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
+import { useLogStore } from "@/stores/logStore"; // Importer le store des logs
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PickerExample } from "@/components/custom/ColorPicker";
+import { DarkModeSelector } from "@/components/custom/DarkModeSelector";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { Settings } from "lucide-react";
 
 export default function Page() {
-    
+
+    const addLog = useLogStore((state) => state.addLog); // Utiliser la méthode pour ajouter un log
     const [tempValue, setTempValue] = useState<string>(""); // Valeur temporaire pour l'édition
     
     const [data, setData] = useState([
@@ -50,7 +57,6 @@ export default function Page() {
 
     const saveData = async (updatedData: typeof data) => {
         try {
-            // Filtrer les lignes où les deux champs sont vides
             const filteredData = updatedData.filter(
                 (row) => row.original.trim() !== "" || row.replacement.trim() !== ""
             );
@@ -60,6 +66,12 @@ export default function Page() {
             });
 
             setData(filteredData); // Mettre à jour l'état local avec les données filtrées
+            const logMessage = [
+                `Le tableau de remplacement a été mis à jour, ${filteredData.length} paire${filteredData.length > 1 ? "s" : ""} ${filteredData.length > 1 ? "ont":"a"} été trouvée${filteredData.length > 1 ? "s" : ""} :`,
+                ...filteredData.map((row) => `${row.original} -> ${row.replacement}`),
+            ].join("\n");
+            addLog(`[${new Date().toLocaleString()}] - ${logMessage}`); // Ajouter un log
+
             console.log("Données sauvegardées !");
         } catch (error) {
             console.error("Erreur lors de la sauvegarde des données :", error);
@@ -152,6 +164,43 @@ export default function Page() {
                 >
                     Sauvegarder le tableau
                 </button>
+                <Dialog>
+                            <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
+                                <TooltipProvider delayDuration={50}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Settings className="h-4 w-4" />
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                            <p>Settings</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Alert</DialogTitle>
+                                    <DialogDescription asChild>
+                                        <div>
+                                            <ul className="text-foreground flex flex-col gap-4 mt-4">
+                                                <li className="flex items-center gap-5 text-foreground">
+                                                    <p className="min-w-[100px]">
+                                                        DarkMode :{" "}
+                                                    </p>
+                                                    <DarkModeSelector />
+                                                </li>
+                                                <li className="flex items-center gap-5 text-foreground">
+                                                    <p className="min-w-[100px]">
+                                                        Color Picker :{" "}
+                                                    </p>
+                                                    <PickerExample />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </DialogDescription>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
             </div>
 
             <div className="overflow-x-auto w-full max-w-4xl">

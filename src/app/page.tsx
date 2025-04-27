@@ -1,16 +1,28 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
 import { useLogStore } from "@/stores/logStore";
+import { useMonitoringStore } from "@/stores/monitoringStore";
 import LogBox from "@/components/LogBox";
+import { useEffect } from "react";
 
 export default function Page() {
-    const [isMonitoring, setIsMonitoring] = useState(false);
+    const isMonitoring = useMonitoringStore((state) => state.isMonitoring);
+    const setIsMonitoring = useMonitoringStore((state) => state.setIsMonitoring);
+    const autoStart = useMonitoringStore((state) => state.autoStart);
+    const setAutoStart = useMonitoringStore((state) => state.setAutoStart);
     const addLog = useLogStore((state) => state.addLog);
     const logs = useLogStore((state) => state.logs);
+
+    // Démarrer la surveillance au chargement si autoStart est activé
+    useEffect(() => {
+        if (autoStart && !isMonitoring) {
+            toggleMonitoring(); // Démarrer la surveillance uniquement si autoStart est activé
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Exécuté uniquement au chargement de la page
 
     const toggleMonitoring = async () => {
         if (!isMonitoring) {
@@ -44,6 +56,20 @@ export default function Page() {
             }}
             className="flex flex-col h-screen p-4"
         >
+            {/* Checkbox pour activer/désactiver la surveillance au démarrage */}
+            <div className="mb-4 flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    id="autoStart"
+                    checked={autoStart}
+                    onChange={(e) => setAutoStart(e.target.checked)} // Met à jour uniquement l'état
+                    className="w-4 h-4"
+                />
+                <label htmlFor="autoStart" className="text-sm text-foreground">
+                    Activer la surveillance au démarrage
+                </label>
+            </div>
+
             {/* Bouton toggle */}
             <div className="mb-4">
                 <button
