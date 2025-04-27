@@ -39,11 +39,14 @@
         "removeFile": true,
         "renameFile": true,
         "scope": [
-          "$APPDATA/**"
+          "$APPDATA/**", "$HOME", "$DESKTOP", "**"
         ],
         "writeFile": true
       },
       "path": {
+        "all": true
+      },
+      "shell": {
         "all": true
       }
     },
@@ -93,7 +96,7 @@
         "height": 700,
         "minHeight": 600,
         "resizable": true,
-        "title": "tauri-designed-template",
+        "title": "Regmarks Hotfolder",
         "width": 950,
         "minWidth": 850,
         "decorations": false

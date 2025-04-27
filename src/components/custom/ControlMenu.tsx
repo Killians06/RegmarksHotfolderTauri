@@ -10,6 +10,7 @@ export const ControlMenu = () => {
 
     const isMonitoring = useMonitoringStore((state) => state.isMonitoring);
     const setIsMonitoring = useMonitoringStore((state) => state.setIsMonitoring);
+    const setIsFirstLoad = useMonitoringStore((state) => state.setIsFirstLoad); // Ajouter setIsFirstLoad
     const addLog = useLogStore((state) => state.addLog);
 
     async function setupAppWindow() {
@@ -31,11 +32,14 @@ export const ControlMenu = () => {
             setIsMonitoring(false);
         }
 
+        // Réinitialiser isFirstLoad pour le prochain démarrage
+        setIsFirstLoad(true);
+
         // Attendre 5 secondes avant de fermer l'application
-        addLog(`[${new Date().toLocaleString()}] - Fermeture de l'application dans 5 secondes...`);
+        addLog(`[${new Date().toLocaleString()}] - Fermeture de l'application dans 2.5 secondes...`);
         setTimeout(async () => {
             await appWindow?.close();
-        }, 5000); // 5000 ms = 5 secondes
+        }, 2500); // 5000 ms = 5 secondes
     };
 
     return (

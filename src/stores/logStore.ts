@@ -9,8 +9,11 @@ interface LogStore {
 export const useLogStore = create<LogStore>((set) => ({
     logs: [],
     addLog: (log) =>
-        set((state) => ({
-            logs: [...state.logs, log],
-        })),
+        set((state) => {
+            if (!state.logs.includes(log)) {
+                return { logs: [...state.logs, log] };
+            }
+            return state; // Ne rien faire si le log existe déjà
+        }),
     clearLogs: () => set({ logs: [] }),
 }));

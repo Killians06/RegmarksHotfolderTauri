@@ -2,11 +2,11 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher, Config};
-use serde::Deserialize;
 use std::fs;
 use std::path::Path;
 use std::sync::mpsc::channel;
 use tauri::Manager;
+
 mod events;
 
 use events::{create_menu, handle_menu_event};
@@ -17,103 +17,53 @@ struct WatcherState {
     watcher: Option<RecommendedWatcher>,
 }
 
-#[derive(Deserialize)]
-struct Data {
-    input: String,
-}
 
 fn main() {
     tauri::Builder::default()
         .menu(create_menu())
         .on_menu_event(|event| handle_menu_event(&event.window(), event.menu_item_id()))
         .manage(Arc::new(Mutex::new(WatcherState::default())))
-        .invoke_handler(tauri::generate_handler![start_monitoring, stop_monitoring])
+        .invoke_handler(tauri::generate_handler![
+            start_monitoring,
+            stop_monitoring,
+            process_file,
+            update_folders // Ajout de la commande ici
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-// #[tauri::command]
-// fn start_monitoring(app_handle: tauri::AppHandle) {
-//     std::thread::spawn(move || {
-//         // Lire le fichier data.json
-//         let data_file = app_handle
-//             .path_resolver()
-//             .app_data_dir()
-//             .unwrap()
-//             .join("folders.json");
-
-//         let data: Data = match fs::read_to_string(&data_file) {
-//             Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| {
-//                 panic!("Erreur lors du parsing de folders.json");
-//             }),
-//             Err(_) => panic!("Impossible de lire le fichier folders.json"),
-//         };
-
-//         let folder_path = data.input;
-
-//         let (tx, rx) = channel();
-
-//         // Créer un watcher avec la configuration par défaut
-//         let mut watcher = RecommendedWatcher::new(tx, Config::default()).unwrap();
-
-//         // Convertir la String en &Path
-//         let path = Path::new(&folder_path);
-
-//         // Commence à surveiller le dossier
-//         watcher.watch(path, RecursiveMode::Recursive).unwrap();
-
-//         for event in rx {
-//             if let Ok(event) = event {
-//                 // Envoyer l'événement au frontend
-//                 app_handle.emit_all("folder-changed", format!("{:?}", event)).unwrap();
-//             }
-//         }
-//     });
-// }
-
 #[tauri::command]
 fn start_monitoring(
+    input_folder: String, // Recevoir le dossier d'entrée en paramètre
     state: tauri::State<Arc<Mutex<WatcherState>>>,
     app_handle: tauri::AppHandle,
 ) {
-  let data_file = app_handle
-               .path_resolver()
-               .app_data_dir()
-               .unwrap()
-               .join("folders.json");
-
-  let data: Data = match fs::read_to_string(&data_file) {
-                Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| {
-                    panic!("Erreur lors du parsing de folders.json");
-                }),
-                Err(_) => panic!("Impossible de lire le fichier folders.json"),
-            };
-          
-            let folder_path = data.input;
-
     let mut state = state.lock().unwrap();
     let (tx, rx) = channel();
 
     let mut watcher = RecommendedWatcher::new(tx, Config::default()).unwrap();
-    let path = Path::new(&folder_path);
-    watcher.watch(path, RecursiveMode::Recursive).unwrap();
+    let path = Path::new(&input_folder);
+    watcher.watch(path, RecursiveMode::NonRecursive).unwrap();
 
     state.watcher = Some(watcher);
 
     std::thread::spawn(move || {
-      for event in rx {
-          if let Ok(event) = event {
-              // Filtrer uniquement les événements de création
-              if let EventKind::Create(_) = event.kind {
-                  app_handle
-                      .emit_all("folder-changed", format!("Nouveau fichier : {:?}", event.paths))
-                      .unwrap();
-              }
-          }
-      }
-  });
+        for event in rx {
+            if let Ok(event) = event {
+                if let EventKind::Create(_) = event.kind {
+                    for path in event.paths {
+                        let cleaned_path = path.to_string_lossy().to_string();
+                        app_handle
+                            .emit_all("folder-changed", cleaned_path)
+                            .unwrap();
+                    }
+                }
+            }
+        }
+    });
 
-    println!("Surveillance démarrée sur le dossier : {}", folder_path);
+    println!("Surveillance démarrée sur le dossier : {}", input_folder);
 }
 
 #[tauri::command]
@@ -125,4 +75,46 @@ fn stop_monitoring(state: tauri::State<Arc<Mutex<WatcherState>>>) {
     } else {
         println!("Aucun watcher actif à arrêter.");
     }
+}
+
+#[tauri::command]
+fn process_file(file_path: String, output_folder: String, replacements: Vec<(String, String)>) -> Result<String, String> {
+    // Lire le contenu du fichier
+    let content = fs::read_to_string(&file_path).map_err(|e| format!("Erreur de lecture du fichier : {}", e))?;
+
+    // Appliquer les remplacements
+    let mut modified_content = content;
+    for (search, replace) in replacements {
+        modified_content = modified_content.replace(&search, &replace);
+    }
+
+    // Déterminer le chemin du fichier de sortie avec le suffixe "_processed"
+    let file_name = Path::new(&file_path)
+        .file_name()
+        .ok_or("Nom de fichier introuvable")?
+        .to_str()
+        .ok_or("Nom de fichier invalide")?;
+
+    // Ajouter le suffixe "_processed" avant l'extension
+    let processed_file_name = if let Some((name, ext)) = file_name.rsplit_once('.') {
+        format!("{}_processed.{}", name, ext)
+    } else {
+        format!("{}_processed", file_name) // Si le fichier n'a pas d'extension
+    };
+
+    let output_path = Path::new(&output_folder).join(processed_file_name);
+
+    // Écrire le fichier modifié
+    fs::write(&output_path, modified_content).map_err(|e| format!("Erreur d'écriture du fichier : {}", e))?;
+
+    Ok(output_path.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+fn update_folders(input_folder: String, output_folder: String) {
+    println!(
+        "Dossiers mis à jour : inputFolder = {}, outputFolder = {}",
+        input_folder, output_folder
+    );
+    // Vous pouvez stocker ces valeurs dans une structure globale ou les utiliser directement
 }

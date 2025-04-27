@@ -1,6 +1,6 @@
 {
-    "name": "tauri-designed-template",
-    "version": "0.1.0",
+    "name": "Regmarks-Hotfolder",
+    "version": "0.6.0",
     "private": true,
     "scripts": {
         "dev": "next dev",

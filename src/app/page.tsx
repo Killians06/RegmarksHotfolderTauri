@@ -3,45 +3,160 @@
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
+import { appWindow } from "@tauri-apps/api/window";
 import { useLogStore } from "@/stores/logStore";
 import { useMonitoringStore } from "@/stores/monitoringStore";
+import { useFolderStore } from "@/stores/folderStore"; // Importer le store des dossiers
+import { useReplacementStore } from "@/stores/replacementStore";
 import LogBox from "@/components/LogBox";
 import { useEffect } from "react";
+import { readTextFile, writeFile } from "@tauri-apps/api/fs";
+import { join } from "@tauri-apps/api/path";
+
+export interface ReplacementStore {
+    // Other properties
+    replacements: { search: string; replace: string }[]; // Ensure the replacements property is defined
+}
+
+let unlistenFolderChanged: (() => void) | null = null;
+let isFolderChangedListenerActive = false; // Variable pour suivre l'état de l'écouteur
 
 export default function Page() {
+    const isFirstLoad = useMonitoringStore((state) => state.isFirstLoad);
+    const setIsFirstLoad = useMonitoringStore((state) => state.setIsFirstLoad);
     const isMonitoring = useMonitoringStore((state) => state.isMonitoring);
     const setIsMonitoring = useMonitoringStore((state) => state.setIsMonitoring);
     const autoStart = useMonitoringStore((state) => state.autoStart);
     const setAutoStart = useMonitoringStore((state) => state.setAutoStart);
     const addLog = useLogStore((state) => state.addLog);
     const logs = useLogStore((state) => state.logs);
+    const replacements = useReplacementStore((state) => state.replacements);
 
-    // Démarrer la surveillance au chargement si autoStart est activé
+    const inputFolder = useFolderStore((state) => state.inputFolder);
+    const outputFolder = useFolderStore.getState().outputFolder;
+
+    // Démarrer la surveillance uniquement au premier chargement si autoStart est activé
     useEffect(() => {
-        if (autoStart && !isMonitoring) {
+        if (typeof window !== "undefined" && isFirstLoad && autoStart && !isMonitoring) {
             toggleMonitoring(); // Démarrer la surveillance uniquement si autoStart est activé
+            setIsFirstLoad(false); // Marquer que le premier chargement est terminé
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Exécuté uniquement au chargement de la page
+    }, []); // Exécuté uniquement au premier chargement de la page
+
+    // Arrêter la surveillance avant la fermeture de l'application
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const handleCloseRequest = async () => {
+                if (isMonitoring) {
+                    await invoke("stop_monitoring"); // Arrêter la surveillance
+                    addLog(`[${new Date().toLocaleString()}] - Surveillance arrêtée avant la fermeture.`);
+                    setIsMonitoring(false);
+                }
+                // Permettre la fermeture de l'application
+                await appWindow.close();
+            };
+
+            const unlisten = appWindow.listen("tauri://close-request", handleCloseRequest);
+
+            return () => {
+                unlisten.then((fn) => fn()); // Nettoyer l'écouteur d'événements
+            };
+        }
+    }, [isMonitoring]);
+
+    useEffect(() => {
+        return () => {
+            if (unlistenFolderChanged) {
+                unlistenFolderChanged();
+                unlistenFolderChanged = null;
+                isFolderChangedListenerActive = false; // Réinitialiser l'état de l'écouteur
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+
+        if (isMonitoring && inputFolder) {
+            // Arrêter la surveillance actuelle
+            (async () => {
+                await invoke("stop_monitoring");
+                addLog(`[${new Date().toLocaleString()}] - Surveillance redémarrée sur le dossier : ${inputFolder}`);
+                // Démarrer la surveillance avec le nouveau dossier
+                await invoke("start_monitoring", { inputFolder: inputFolder });
+            })();
+        }
+    }, [useFolderStore((state) => state.inputFolder)]);
 
     const toggleMonitoring = async () => {
         if (!isMonitoring) {
             addLog(`[${new Date().toLocaleString()}] - Surveillance démarrée...`);
             setIsMonitoring(true);
 
-            // Appeler la commande backend pour commencer la surveillance
-            await invoke("start_monitoring", { folderPath: "path/to/folder" });
+            if (inputFolder) {
+                try {
+                    await invoke("start_monitoring", { inputFolder: inputFolder });
+                    console.log("Commande start_monitoring envoyée avec :", inputFolder);
+                } catch (error) {
+                    console.error("Erreur lors de l'appel à start_monitoring :", error);
+                }
+            } else {
+                console.error("Aucun dossier d'entrée sélectionné.");
+            }
 
             // Écouter les événements de changement de dossier
-            listen("folder-changed", (event) => {
-                const timestamp = new Date().toLocaleString();
-                addLog(`[${timestamp}] - Changement détecté : ${event.payload}`);
-            });
+            if (!isFolderChangedListenerActive) {
+                isFolderChangedListenerActive = true; // Marquer l'écouteur comme actif
+                unlistenFolderChanged = await listen("folder-changed", async (event) => {
+                    const timestamp = new Date().toLocaleString();
+                    const filePath = event.payload as string; // Chemin nettoyé reçu du backend
+
+                    addLog(`[${timestamp}] - Nouveau fichier détecté : ${filePath}`);
+
+                    // Traiter le fichier
+                    await processFile(filePath);
+                });
+            }
         } else {
             const timestamp = new Date().toLocaleString();
             await invoke("stop_monitoring");
             addLog(`[${timestamp}] - Surveillance arrêtée.`);
             setIsMonitoring(false);
+
+            // Nettoyer l'écouteur d'événements
+            if (unlistenFolderChanged) {
+                unlistenFolderChanged();
+                unlistenFolderChanged = null;
+                isFolderChangedListenerActive = false; // Marquer l'écouteur comme inactif
+            }
+        }
+    };
+
+    const processFile = async (filePath: string) => {
+        try {
+            const inputFolder = useFolderStore.getState().inputFolder;
+            const outputFolder = useFolderStore.getState().outputFolder;
+
+            if (!inputFolder || !outputFolder) {
+                throw new Error("Les dossiers d'entrée et de sortie doivent être configurés.");
+            }
+
+            // Convertir les remplacements en tuples
+            const replacementsTuples = replacements.map(({ search, replace }) => [search, replace]);
+
+            // Appeler la commande backend
+            const outputPath = await invoke<string>("process_file", {
+                filePath,
+                outputFolder,
+                replacements: replacementsTuples,
+            });
+
+            console.log(`Fichier traité et enregistré : ${outputPath}`);
+            addLog(`[${new Date().toLocaleString()}] - Fichier traité : ${outputPath}`);
+        } catch (error) {
+            console.error("Erreur lors du traitement du fichier :", error);
+            const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+            addLog(`[${new Date().toLocaleString()}] - Erreur : ${errorMessage}`);
         }
     };
 

@@ -1,8 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useLogStore } from "@/stores/logStore"; // Importer le store des logs
+import { useReplacementStore } from "@/stores/replacementStore"; // Importer le store des remplacements
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PickerExample } from "@/components/custom/ColorPicker";
 import { DarkModeSelector } from "@/components/custom/DarkModeSelector";
@@ -10,131 +10,55 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix
 import { Settings } from "lucide-react";
 
 export default function Page() {
+    const addLog = useLogStore((state) => state.addLog); // Assurez-vous que cette fonction est stable
+    const replacements = useReplacementStore((state) => state.replacements); // Récupérer les remplacements depuis le store
+    const addReplacement = useReplacementStore((state) => state.addReplacement); // Ajouter une ligne
+    const updateReplacement = useReplacementStore((state) => state.updateReplacement); // Mettre à jour une ligne
+    const deleteReplacement = useReplacementStore((state) => state.deleteReplacement); // Supprimer une ligne
 
-    const addLog = useLogStore((state) => state.addLog); // Utiliser la méthode pour ajouter un log
     const [tempValue, setTempValue] = useState<string>(""); // Valeur temporaire pour l'édition
-    
-    const [data, setData] = useState([
-        { id: 1, original: "Bonjour", replacement: "Hello" },
-        { id: 2, original: "Au revoir", replacement: "Goodbye" },
-        { id: 3, original: "Merci", replacement: "Thank you" },
-    ]);
-
     const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
 
-    const ensureDataFileExists = async () => {
-        try {
-            await readTextFile("data.json", { dir: BaseDirectory.App });
-        } catch (error) {
-            const defaultData = [
-                { id: 1, original: "Register", replacement: "Mark" },
-                { id: 2, original: "CutContour", replacement: "Cut" },
-            ];
-            await writeTextFile("data.json", JSON.stringify(defaultData, null, 2), {
-                dir: BaseDirectory.App,
-            });
-            console.log("Fichier data.json créé avec des données par défaut.");
-        }
-    };
-
-    const loadData = async () => {
-        try {
-            const fileData = await readTextFile("data.json", { dir: BaseDirectory.App });
-            setData(JSON.parse(fileData));
-            console.log("Données chargées :", JSON.parse(fileData));
-        } catch (error) {
-            console.error("Erreur lors du chargement des données :", error);
-        }
-    };
-
-    useEffect(() => {
-        const initializeDataFile = async () => {
-            await ensureDataFileExists();
-            loadData();
-        };
-        initializeDataFile();
-    }, []);
-
-    const saveData = async (updatedData: typeof data) => {
-        try {
-            const filteredData = updatedData.filter(
-                (row) => row.original.trim() !== "" || row.replacement.trim() !== ""
-            );
-
-            await writeTextFile("data.json", JSON.stringify(filteredData, null, 2), {
-                dir: BaseDirectory.App,
-            });
-
-            setData(filteredData); // Mettre à jour l'état local avec les données filtrées
-            const logMessage = [
-                `Le tableau de remplacement a été mis à jour, ${filteredData.length} paire${filteredData.length > 1 ? "s" : ""} ${filteredData.length > 1 ? "ont":"a"} été trouvée${filteredData.length > 1 ? "s" : ""} :`,
-                ...filteredData.map((row) => `${row.original} -> ${row.replacement}`),
-            ].join("\n");
-            addLog(`[${new Date().toLocaleString()}] - ${logMessage}`); // Ajouter un log
-
-            console.log("Données sauvegardées !");
-        } catch (error) {
-            console.error("Erreur lors de la sauvegarde des données :", error);
-        }
-    };
-
     const handleInputChange = (id: number, field: string, value: string) => {
-        const updatedData = data.map((row) =>
-            row.id === id ? { ...row, [field]: value } : row
-        );
-        setData(updatedData); // Mettre à jour les données localement
+        updateReplacement(id, field, value); // Mettre à jour la ligne dans le store
     };
 
     const handleAddRow = () => {
-        const newRow = {
-            id: data.length + 1, // Générer un nouvel ID
-            original: "", // Champ vide
-            replacement: "", // Champ vide
-        };
-        const updatedData = [...data, newRow];
-        setData(updatedData); // Mettre à jour les données localement
-
-        // Rendre la première cellule de la nouvelle ligne éditable
-        setEditingCell({ id: newRow.id, field: "original" });
+        addReplacement(); // Ajouter une nouvelle ligne dans le store
     };
 
     const handleDeleteRow = (id: number) => {
-        const updatedData = data.filter((row) => row.id !== id); // Supprimer la ligne avec l'ID donné
-        setData(updatedData); // Mettre à jour les données localement
+        deleteReplacement(id); // Supprimer la ligne dans le store
     };
 
     const handleBlur = (id: number, field: string) => {
-        // Vérifier si une valeur temporaire existe avant de mettre à jour
         if (tempValue.trim() !== "") {
-            const updatedData = data.map((row) =>
-                row.id === id ? { ...row, [field]: tempValue } : row
-            );
-            setData(updatedData); // Mettre à jour les données localement
+            updateReplacement(id, field, tempValue); // Mettre à jour la valeur dans le store
         }
         setTempValue(""); // Réinitialiser la valeur temporaire
         setEditingCell(null); // Quitter le mode édition
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, id: number, field: string) => {
-        if (e.key === "Enter" ||  e.key === "Tab") {
+        if (e.key === "Enter" || e.key === "Tab") {
             e.preventDefault(); // Empêcher le comportement par défaut de la touche "Entrée"
-    
+
             // Sauvegarder la valeur actuelle avant de passer à la cellule suivante
             handleBlur(id, field);
-    
+
             // Passer à la cellule suivante
-            if (field === "original") {
-                setEditingCell({ id, field: "replacement" });
-                const currentRow = data.find((row) => row.id === id);
+            if (field === "search") {
+                setEditingCell({ id, field: "replace" });
+                const currentRow = replacements.find((row) => row.id === id);
                 if (currentRow) {
-                    setTempValue(currentRow.replacement); // Initialiser avec la valeur de la cellule suivante
+                    setTempValue(currentRow?.replace || ""); // Initialiser avec la valeur de la cellule suivante
                 }
-            } else if (field === "replacement") {
+            } else if (field === "replace") {
                 // Si c'est la dernière cellule de la ligne, passer à la ligne suivante
-                const nextRow = data.find((row) => row.id === id + 1);
+                const nextRow = replacements.find((row) => row.id === id + 1);
                 if (nextRow) {
-                    setEditingCell({ id: nextRow.id, field: "original" });
-                    setTempValue(nextRow.original); // Initialiser avec la valeur de la cellule suivante
+                    setEditingCell({ id: nextRow.id, field: "search" });
+                    setTempValue(nextRow.search); // Initialiser avec la valeur de la cellule suivante
                 } else {
                     // Si c'est la dernière ligne, ajouter une nouvelle ligne
                     handleAddRow();
@@ -142,6 +66,22 @@ export default function Page() {
             }
         }
     };
+
+    useEffect(() => {
+        console.log("useEffect triggered for replacements summary");
+
+        return () => {
+            // Formater les paires de remplacement
+            const replacementSummary = replacements
+                .map((row) => `${row.search} -> ${row.replace}`)
+                .join("\n");
+
+            // Ajouter le résumé dans la logbox
+            if (replacementSummary) {
+                addLog(`[${new Date().toLocaleString()}] - Résumé des remplacements :\n${replacementSummary}`);
+            }
+        };
+    }, [replacements]); // Supprimez `addLog` des dépendances si elle ne change pas
 
     return (
         <motion.div
@@ -155,53 +95,6 @@ export default function Page() {
             className="flex min-h-screen flex-col items-center justify-center p-6 bg-background"
         >
             <h1 className="text-2xl mb-8 text-foreground">Tableau de Remplacements</h1>
-            
-            {/* Bouton pour sauvegarder */}
-            <div className="mb-4">
-                <button
-                    onClick={() => saveData(data)} // Sauvegarder les données actuelles
-                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
-                >
-                    Sauvegarder le tableau
-                </button>
-                <Dialog>
-                            <DialogTrigger className="flex items-center gap-3 rounded-lg py-2 text-muted-foreground transition-all hover:text-primary">
-                                <TooltipProvider delayDuration={50}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Settings className="h-4 w-4" />
-                                        </TooltipTrigger>
-                                        <TooltipContent side="right">
-                                            <p>Settings</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Alert</DialogTitle>
-                                    <DialogDescription asChild>
-                                        <div>
-                                            <ul className="text-foreground flex flex-col gap-4 mt-4">
-                                                <li className="flex items-center gap-5 text-foreground">
-                                                    <p className="min-w-[100px]">
-                                                        DarkMode :{" "}
-                                                    </p>
-                                                    <DarkModeSelector />
-                                                </li>
-                                                <li className="flex items-center gap-5 text-foreground">
-                                                    <p className="min-w-[100px]">
-                                                        Color Picker :{" "}
-                                                    </p>
-                                                    <PickerExample />
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </DialogDescription>
-                                </DialogHeader>
-                            </DialogContent>
-                        </Dialog>
-            </div>
 
             <div className="overflow-x-auto w-full max-w-4xl">
                 <table className="table-auto w-full border-collapse bg-card shadow-lg rounded-lg">
@@ -219,7 +112,7 @@ export default function Page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((row, index) => (
+                        {replacements.map((row, index) => (
                             <tr
                                 key={row.id}
                                 className={`${
@@ -229,40 +122,40 @@ export default function Page() {
                                 <td
                                     className="border border-border px-6 py-3 cursor-pointer w-1/2"
                                     onClick={() => {
-                                        setEditingCell({ id: row.id, field: "original" });
-                                        setTempValue(row.original); // Initialiser la valeur temporaire
+                                        setEditingCell({ id: row.id, field: "search" });
+                                        setTempValue(row.search); // Initialiser la valeur temporaire
                                     }}
                                 >
-                                    {editingCell?.id === row.id && editingCell.field === "original" ? (
+                                    {editingCell?.id === row.id && editingCell.field === "search" ? (
                                         <input
                                             type="text"
                                             value={tempValue} // Utiliser la valeur temporaire
                                             onChange={(e) => setTempValue(e.target.value)} // Mettre à jour la valeur temporaire
-                                            onBlur={() => handleBlur(row.id, "original")} // Sauvegarder lors du blur
-                                            onKeyDown={(e) => handleKeyDown(e, row.id, "original")} // Gérer la touche "Entrée"
+                                            onBlur={() => handleBlur(row.id, "search")} // Sauvegarder lors du blur
+                                            onKeyDown={(e) => handleKeyDown(e, row.id, "search")} // Gérer la touche "Entrée"
                                             autoFocus
                                             className="w-full border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                                         />
                                     ) : (
-                                        <span className="block w-full text-foreground">{row.original}</span>
+                                        <span className="block w-full text-foreground">{row.search}</span>
                                     )}
                                 </td>
                                 <td
                                     className="border border-border px-6 py-3 cursor-pointer w-1/2"
-                                    onClick={() => setEditingCell({ id: row.id, field: "replacement" })}
+                                    onClick={() => setEditingCell({ id: row.id, field: "replace" })}
                                 >
-                                    {editingCell?.id === row.id && editingCell.field === "replacement" ? (
+                                    {editingCell?.id === row.id && editingCell.field === "replace" ? (
                                         <input
                                             type="text"
                                             value={tempValue} // Utiliser la valeur temporaire
                                             onChange={(e) => setTempValue(e.target.value)} // Mettre à jour la valeur temporaire
-                                            onBlur={() => handleBlur(row.id, "replacement")} // Sauvegarder lors du blur
-                                            onKeyDown={(e) => handleKeyDown(e, row.id, "replacement")} // Gérer la touche "Entrée"
+                                            onBlur={() => handleBlur(row.id, "replace")} // Sauvegarder lors du blur
+                                            onKeyDown={(e) => handleKeyDown(e, row.id, "replace")} // Gérer la touche "Entrée"
                                             autoFocus
                                             className="w-full border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                                         />
                                     ) : (
-                                        <span className="block w-full text-foreground">{row.replacement}</span>
+                                        <span className="block w-full text-foreground">{row.replace}</span>
                                     )}
                                 </td>
                                 <td className="border border-border px-6 py-3 text-center">
@@ -277,7 +170,7 @@ export default function Page() {
                         ))}
                         <tr
                             className={`${
-                                data.length % 2 === 0 ? "bg-card" : "bg-muted"
+                                replacements.length % 2 === 0 ? "bg-card" : "bg-muted"
                             } hover:bg-primary/60 cursor-pointer`}
                             onClick={handleAddRow}
                         >
